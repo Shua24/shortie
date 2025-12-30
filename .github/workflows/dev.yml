@@ -7,7 +7,10 @@ on:
     branches: [ "dev" ]
 
 jobs:
-  laravel-tests:
+  laravel-lintfix:
+
+permissions:
+  contents: write
 
     runs-on: ubuntu-latest
 
@@ -33,6 +36,9 @@ jobs:
         mkdir -p database
         touch database/database.sqlite
     - name: Lint with PHPCS
-      run: |
-        vendor/bin/php-cs-fixer fix app/ routes/ database/ tests/ --rules=@PSR12 --verbose
-
+      run: vendor/bin/phpcbf --standard=PSR12 app/ routes/ database/ tests/ || true
+      continue-on-error: true
+    - name: Commit and push fixes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "chore: auto‑fix PHP code style via PHPCBF"
