@@ -6,12 +6,11 @@ on:
   pull_request:
     branches: [ "dev" ]
 
-jobs:
-  laravel-lintfix:
-
 permissions:
   contents: write
 
+jobs:
+  laravel-lintfix:
     runs-on: ubuntu-latest
 
     steps:
