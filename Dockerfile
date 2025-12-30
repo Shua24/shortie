@@ -1,10 +1,15 @@
 # Use PHP with Apache as the base image
-FROM php:8.2-apache as web
+FROM php:8.4-apache as web
 
 # Install Additional System Dependencies
 RUN apt-get update && apt-get install -y \
     libzip-dev \
-    zip nodejs
+    zip \
+    curl \
+    gnupg \
+    lsb-release \
+    ca-certificates \
+    build-essential
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -32,6 +37,11 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Install project dependencies
 RUN composer install
+
+# Install Node.js (LTS) and npm
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest
 
 # Install Nodejs dependencies
 RUN npm ci && run build
