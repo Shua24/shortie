@@ -3,7 +3,6 @@ name: Laravel CI - Stage 2 - Deployment
 on:
   push:
     branches: [ "staging" ]
-    types: [opened, synchronize, reopened]
 
 jobs:
   deploy:

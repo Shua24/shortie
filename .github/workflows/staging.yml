@@ -8,6 +8,16 @@ on:
 jobs:
   phptest:
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7.4
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 3
 
     steps:
     - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
@@ -33,7 +43,7 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
         CACHE_STORE: redis
-        REDIS_HOST: ${{ secrets.REDIS_HOST }}
-        REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-        REDIS_PORT: ${{ secrets.REDIS_PORT }}
+        REDIS_HOST: 127.0.0.1
+        REDIS_PASSWORD: null
+        REDIS_PORT: 6379
       run: php artisan test
