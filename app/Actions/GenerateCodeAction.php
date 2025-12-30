@@ -10,7 +10,9 @@ class GenerateCodeAction
     public function execute(): string
     {
         $code = Str::random(5);
-        if(Cache::has($code)) $this->execute();
+        if (Cache::has($code)) {
+            $this->execute();
+        }
 
         return $code;
     }

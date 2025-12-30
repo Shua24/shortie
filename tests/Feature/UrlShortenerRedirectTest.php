@@ -3,6 +3,7 @@
 use App\Actions\GenerateCodeAction;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+
 use function Pest\Laravel\post;
 use function Pest\Laravel\get;
 
@@ -52,5 +53,3 @@ it('returns a 404 when redirecting a non existing code', function () {
 
     $response->assertStatus(404);
 });
-
-
