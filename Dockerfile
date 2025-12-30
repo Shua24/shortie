@@ -44,7 +44,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
     && npm install -g npm@latest
 
 # Install Nodejs dependencies
-RUN npm ci && run build
+RUN npm ci && npm run build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
