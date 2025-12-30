@@ -1,5 +1,5 @@
 # Use PHP with Apache as the base image
-FROM php:8.2-apache as web
+FROM php:8.4-apache as web
 
 # Install Additional System Dependencies
 RUN apt-get update && apt-get install -y \
