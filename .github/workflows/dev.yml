@@ -33,4 +33,6 @@ jobs:
         mkdir -p database
         touch database/database.sqlite
     - name: Lint with PHPCS
-      run: vendor/bin/phpcs --standard=PSR12 app/ routes/ database/ tests/
+      run: |
+        vendor/bin/php-cs-fixer fix app/ routes/ database/ tests/ --rules=@PSR12 --verbose
+
