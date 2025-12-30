@@ -23,7 +23,7 @@ jobs:
     - name: Install Node.js dependencies
       run: npm ci && npm run build
     - name: Install PHP CodeSniffer
-      run: composer require --dev squizlabs/CodeSniffer
+      run: composer require --dev squizlabs/php_codesniffer
     - name: Generate key
       run: php artisan key:generate
     - name: Directory Permissions
