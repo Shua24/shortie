@@ -37,4 +37,3 @@ jobs:
         REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
         REDIS_PORT: ${{ secrets.REDIS_PORT }}
       run: php artisan test
-    - name:
