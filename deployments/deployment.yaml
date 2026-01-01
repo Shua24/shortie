@@ -15,7 +15,6 @@ spec:
      containers:
         - name: shortie
           image: shudd/shortie:0.1-live
-          workingDir: /var/www/html
           env:
             - name: DB_CONNECTION
               value: "sqlite"
