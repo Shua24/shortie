@@ -52,6 +52,10 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Copy .env.example
 RUN cp .env.example .env
 
+# Change DB to SQLite
+RUN sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env \
+    && sed -i 's/^DB_DATABASE=.*/DB_DATABASE=database\/database.sqlite/' .env
+
 # Generate app key first
 RUN php artisan key:generate --force
 
