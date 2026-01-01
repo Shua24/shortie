@@ -1,8 +1,8 @@
-name: Laravel CI - Stage 2 - Deployment
+name: Laravel CI - Stage 3 - Deployment To Production
 
 on:
   push:
-    branches: [ "staging" ]
+    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -21,10 +21,11 @@ jobs:
       with:
         push: true
         tags: |
-          shudd/shortie:0.1-rc1
+          shudd/shortie:0.1-live
           shudd/shortie:${{ github.sha }}
     - name: deploy
       run: |
-        echo "Deploying to Staging..."
+        echo "Deploying to Production..."
         sleep 5
-        echo "App deployed to staging."
+        echo "App deployed to Production."
+
