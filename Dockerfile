@@ -49,6 +49,9 @@ RUN npm ci && npm run build
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Copy .env.example
+RUN cp .env.example .env
+
 # Generate app key first
 RUN php artisan key:generate --force
 
