@@ -19,59 +19,73 @@ spec:
             - sh
             - -c
             - |
-              if [ -z "$APP_KEY"" ]; then
+              set -e
+              # Generate APP_KEY if not already set
+              if [ -z "$APP_KEY" ]; then
                 php artisan key:generate --force
               fi
-              php artisan migrate
+              # Run migrations
+              php artisan migrate --force
           env:
-          - name: DB_CONNECTION
-            value: "sqlite"
-          - name: CACHE_STORE
-            valueFrom:
-              secretKeyRef:
-                name: redis-secret
-                key: CACHE_STORE
-          - name: REDIS_HOST
-            valueFrom:
-              secretKeyRef:
-                name: redis-secret
-                key: REDIS_HOST
-          - name: REDIS_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: redis-secret
-                key: REDIS_PASSWORD
-          - name: REDIS_PORT
-            valueFrom:
-              secretKeyRef:
-                name: redis-secret
-                key: REDIS_PORT
+            - name: DB_CONNECTION
+              value: "sqlite"
+            - name: CACHE_STORE
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: CACHE_STORE
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: REDIS_HOST
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: REDIS_PASSWORD
+            - name: REDIS_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: REDIS_PORT
+          volumeMounts:
+            - name: shortie-storage
+              mountPath: /var/www/html
       containers:
-      - name: shortie
-        image: shudd/shortie:0.1-live
-        env:
-          - name: DB_CONNECTION
-            value: "sqlite"
-          - name: CACHE_STORE
-            valueFrom:
-              secretKeyRef:
-                name: redis-secret
-                key: CACHE_STORE
-          - name: REDIS_HOST
-            valueFrom:
-              secretKeyRef:
-                name: redis-secret
-                key: REDIS_HOST
-          - name: REDIS_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: redis-secret
-                key: REDIS_PASSWORD
-          - name: REDIS_PORT
-            valueFrom:
-              secretKeyRef:
-                name: redis-secret
-                key: REDIS_PORT
+        - name: shortie
+          image: shudd/shortie:0.1-live
+          env:
+            - name: DB_CONNECTION
+              value: "sqlite"
+            - name: CACHE_STORE
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: CACHE_STORE
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: REDIS_HOST
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: REDIS_PASSWORD
+            - name: REDIS_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secret
+                  key: REDIS_PORT
+          volumeMounts:
+            - name: shortie-storage
+              mountPath: /var/www/html
+      volumes:
+        - name: shortie-storage
+          emptyDir: {}
+
+
 ---
 apiVersion: v1
 kind: Service
