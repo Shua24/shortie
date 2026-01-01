@@ -50,7 +50,7 @@ RUN npm ci && npm run build
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Generate app key first
-RUN php artisan key:generate
+RUN php artisan key:generate --force
 
 # Run SQLite migrations so Laravel won't complain
 RUN php artisan migrate --force
