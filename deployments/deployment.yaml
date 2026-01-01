@@ -12,20 +12,30 @@ spec:
       labels:
         app: shortie
     spec:
+      # Shared volume for SQLite, .env, and Laravel code
+      volumes:
+        - name: laravel-storage
+          emptyDir: {}
+
+      # ----------------------------
+      # INIT CONTAINER: migrations + key
+      # ----------------------------
       initContainers:
         - name: shortie-init
           image: shudd/shortie:0.1-live
+          workingDir: /var/www/html      # <-- point to Laravel code
           command:
             - sh
             - -c
             - |
               set -e
-              # Generate APP_KEY if not already set
+              echo "Running Laravel initContainer..."
+              # Generate APP_KEY only if not set
               if [ -z "$APP_KEY" ]; then
-                php /var/www/html/artisan key:generate --force
+                php artisan key:generate --force
               fi
               # Run migrations
-              php /var/www/html/artisan migrate --force
+              php artisan migrate --force
           env:
             - name: DB_CONNECTION
               value: "sqlite"
@@ -50,11 +60,16 @@ spec:
                   name: redis-secret
                   key: REDIS_PORT
           volumeMounts:
-            - name: shortie-storage
-              mountPath: /var/www/html
+            - name: laravel-storage
+              mountPath: /var/www/html    # <-- mount shared volume here
+
+      # ----------------------------
+      # MAIN CONTAINER
+      # ----------------------------
       containers:
         - name: shortie
           image: shudd/shortie:0.1-live
+          workingDir: /var/www/html
           env:
             - name: DB_CONNECTION
               value: "sqlite"
@@ -79,13 +94,8 @@ spec:
                   name: redis-secret
                   key: REDIS_PORT
           volumeMounts:
-            - name: shortie-storage
+            - name: laravel-storage
               mountPath: /var/www/html
-      volumes:
-        - name: shortie-storage
-          emptyDir: {}
-
-
 ---
 apiVersion: v1
 kind: Service
