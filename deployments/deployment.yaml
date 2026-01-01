@@ -36,9 +36,8 @@ spec:
               secretKeyRef:
                 name: redis-secret
                 key: REDIS_PORT
-
-          livenessProbe:
-            httpGet:
+        livenessProbe:
+          httpGet:
               path: /health
               port: 8000
             initialDelaySeconds: 30
