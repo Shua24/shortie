@@ -12,61 +12,7 @@ spec:
       labels:
         app: shortie
     spec:
-      # Shared volume for SQLite, .env, and Laravel code
-      volumes:
-        - name: laravel-storage
-          emptyDir: {}
-
-      # ----------------------------
-      # INIT CONTAINER: migrations + key
-      # ----------------------------
-      initContainers:
-        - name: shortie-init
-          image: shudd/shortie:0.1-live
-          workingDir: /var/www/html      # <-- point to Laravel code
-          command:
-            - sh
-            - -c
-            - |
-              set -e
-              echo "Running Laravel initContainer..."
-              # Generate APP_KEY only if not set
-              if [ -z "$APP_KEY" ]; then
-                php artisan key:generate --force
-              fi
-              # Run migrations
-              php artisan migrate --force
-          env:
-            - name: DB_CONNECTION
-              value: "sqlite"
-            - name: CACHE_STORE
-              valueFrom:
-                secretKeyRef:
-                  name: redis-secret
-                  key: CACHE_STORE
-            - name: REDIS_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: redis-secret
-                  key: REDIS_HOST
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: redis-secret
-                  key: REDIS_PASSWORD
-            - name: REDIS_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: redis-secret
-                  key: REDIS_PORT
-          volumeMounts:
-            - name: laravel-storage
-              mountPath: /var/www/html    # <-- mount shared volume here
-
-      # ----------------------------
-      # MAIN CONTAINER
-      # ----------------------------
-      containers:
+     containers:
         - name: shortie
           image: shudd/shortie:0.1-live
           workingDir: /var/www/html
@@ -93,9 +39,6 @@ spec:
                 secretKeyRef:
                   name: redis-secret
                   key: REDIS_PORT
-          volumeMounts:
-            - name: laravel-storage
-              mountPath: /var/www/html
 ---
 apiVersion: v1
 kind: Service
