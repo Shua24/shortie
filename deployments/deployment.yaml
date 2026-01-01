@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shortie-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: shortie
+  template:
+    metadata:
+      labels:
+        app: shortie
+    spec:
+      containers:
+      - name: shortie
+        image: shudd/shortie:v0.1
+        env:
+          - name: CACHE_STORE
+            valueFrom:
+              secretKeyRef:
+                name: redis-secret
+                key: CACHE_STORE
+          - name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                name: redis-secret
+                key: REDIS_HOST
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-secret
+                key: REDIS_PASSWORD
+          - name: REDIS_PORT
+            valueFrom:
+              secretKeyRef:
+                name: redis-secret
+                key: REDIS_PORT
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shortie-service
+spec:
+  type: ClusterIP
+  selector:
+    app: shortie
+  ports:
+    - port: 80
+      targetPort: 8000
