@@ -12,6 +12,40 @@ spec:
       labels:
         app: shortie
     spec:
+      initContainers:
+        - name: shortie-init
+          image: shudd/shortie:0.1-live
+          command:
+            - sh
+            - -c
+            - |
+              if [ -z "$APP_KEY"" ]; then
+                php artisan key:generate --force
+              fi
+              php artisan migrate
+          env:
+          - name: DB_CONNECTION
+            value: "sqlite"
+          - name: CACHE_STORE
+            valueFrom:
+              secretKeyRef:
+                name: redis-secret
+                key: CACHE_STORE
+          - name: REDIS_HOST
+            valueFrom:
+              secretKeyRef:
+                name: redis-secret
+                key: REDIS_HOST
+          - name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: redis-secret
+                key: REDIS_PASSWORD
+          - name: REDIS_PORT
+            valueFrom:
+              secretKeyRef:
+                name: redis-secret
+                key: REDIS_PORT
       containers:
       - name: shortie
         image: shudd/shortie:0.1-live
@@ -38,7 +72,6 @@ spec:
               secretKeyRef:
                 name: redis-secret
                 key: REDIS_PORT
-
 ---
 apiVersion: v1
 kind: Service
