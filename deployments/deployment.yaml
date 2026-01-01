@@ -16,6 +16,8 @@ spec:
       - name: shortie
         image: shudd/shortie:0.1-live
         env:
+          - name: DB_CONNECTION
+            value: "sqlite"
           - name: CACHE_STORE
             valueFrom:
               secretKeyRef:
