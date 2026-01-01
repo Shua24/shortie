@@ -9,7 +9,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: migrate
-          image: your-laravel-image:latest
+          image: shudd/shortie:0.1-live
           command: ["php", "artisan", "migrate", "--force", "--no-interaction"]
           env:
             - name: DB_CONNECTION
