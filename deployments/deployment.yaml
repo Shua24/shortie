@@ -15,6 +15,7 @@ spec:
       initContainers:
         - name: shortie-init
           image: shudd/shortie:0.1-live
+          workingDir: /var/www/html/
           command:
             - sh
             - -c
