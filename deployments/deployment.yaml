@@ -39,14 +39,14 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 8000
+            port: 80
           initialDelaySeconds: 30
           periodSeconds: 10
 
         readinessProbe:
           httpGet:
             path: /health
-            port: 8000
+            port: 80
           initialDelaySeconds: 10
           periodSeconds: 5
 
@@ -61,4 +61,4 @@ spec:
     app: shortie
   ports:
     - port: 80
-      targetPort: 8000
+      targetPort: 80
