@@ -17,6 +17,11 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # Enable Apache mod_rewrite for URL rewriting
 RUN a2enmod rewrite
 
+# install Redis PHP plugin
+RUN pecl install -o -f redis \
+&&  rm -rf /tmp/pear \
+&&  echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql zip
 
@@ -48,16 +53,6 @@ RUN npm ci && npm run build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Copy .env.example
-RUN cp .env.example .env
-
-# Change DB to SQLite
-RUN sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env \
-    && sed -i 's/^DB_DATABASE=.*/DB_DATABASE=database\/database.sqlite/' .env
-
-# Generate app key first
-RUN php artisan key:generate --force
 
 # Run SQLite migrations so Laravel won't complain
 RUN php artisan migrate --force
