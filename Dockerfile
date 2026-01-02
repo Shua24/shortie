@@ -56,3 +56,6 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 # Run SQLite migrations so Laravel won't complain
 RUN php artisan migrate --force
+
+# Set permissions for database.sqlite
+RUN chown -R www-data:www-data var/www/html/database/database.sqlite
