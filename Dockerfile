@@ -9,14 +9,18 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     lsb-release \
     ca-certificates \
-    build-essential \
-    php8.4-redis
+    build-essential
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache mod_rewrite for URL rewriting
 RUN a2enmod rewrite
+
+# install Redis PHP plugin
+RUN pecl install -o -f redis \
+&&  rm -rf /tmp/pear \
+&&  echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql zip
