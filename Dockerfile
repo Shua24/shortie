@@ -51,11 +51,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
 # Install Nodejs dependencies
 RUN npm ci && npm run build
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Touch database.sqlite
+RUN touch /var/www/html/database/database.sqlite
+
+# Set permissions for storage, cache, and database.sqlite
+RUN chown -R www-data:www-data \
+    /var/www/html/storage \
+    /var/www/html/bootstrap/cache \
+    /var/www/html/database/database.sqlite
 
 # Run SQLite migrations so Laravel won't complain
 RUN php artisan migrate --force
-
-# Set permissions for database.sqlite
-RUN chown -R www-data:www-data var/www/html/database/database.sqlite
