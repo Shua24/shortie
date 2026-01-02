@@ -15,6 +15,7 @@ spec:
      containers:
         - name: shortie
           image: shudd/shortie:0.1-live
+          imagePullPolicy: Always
           env:
             - name: APP_KEY
               valueFrom:
