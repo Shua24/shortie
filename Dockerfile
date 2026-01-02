@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     lsb-release \
     ca-certificates \
-    build-essential
+    build-essential \
+    php8.4-redis
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -48,16 +49,6 @@ RUN npm ci && npm run build
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Copy .env.example
-RUN cp .env.example .env
-
-# Change DB to SQLite
-RUN sed -i 's/^DB_CONNECTION=.*/DB_CONNECTION=sqlite/' .env \
-    && sed -i 's/^DB_DATABASE=.*/DB_DATABASE=database\/database.sqlite/' .env
-
-# Generate app key first
-RUN php artisan key:generate --force
 
 # Run SQLite migrations so Laravel won't complain
 RUN php artisan migrate --force
